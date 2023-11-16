@@ -4,12 +4,19 @@ import java.util.Scanner;
 
 public class Game{
 
-    static Point[] points = new Point[26];
+    static Point[]  points= new Point[26];
     static Scanner scanner = new Scanner(System.in);
 
    
 
     public static void  main(String[] args){
+
+
+        boolean quit = false;
+        boolean turn = true;
+
+        assignCheckers();
+        //Assign players
         System.out.println("Welcome to the Game!");
         System.out.print("Enter name of Player1 : ");
         String username1 = scanner.nextLine();
@@ -18,11 +25,7 @@ public class Game{
         String username2 = scanner.nextLine();
         System.out.println("\n");
 
-        boolean quit = false;
-        boolean turn = true; 
-
         while(!quit) {
-            assignCheckers();
             display();
 
             String currentPlayer = turn ? username1 : username2;
@@ -35,6 +38,8 @@ public class Game{
                     int diceRoll2 = rollDice2();
                     
                     System.out.println("\nRolled Dice values are: "+ diceRoll1 +"," + diceRoll2);
+
+                    //Move the checkers
                     break;
                 case 2:
                     quit = true;
@@ -87,6 +92,7 @@ public class Game{
         return choice;
     }
 
+    //Display - refactor this
     public static void display(){
         //
         int bottomMax=0, topMax=0;
