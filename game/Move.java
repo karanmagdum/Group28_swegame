@@ -8,7 +8,6 @@ public class Move {
         ArrayList<Integer> validPointPositions = new ArrayList<>();
         for(int i=1;i<points.length;i++){
             if(points[i].getType().equals(type)){
-
                 validPointPositions.add(i);
             }
         }
@@ -16,8 +15,29 @@ public class Move {
         for(int i=0;i<validPointPositions.size();i++){
             for(int j=0;j<validPointPositions.size();j++){
                     if(isValidMove(points, validPointPositions.get(i), roll1, validPointPositions.get(j), roll2, forward)){
-                        System.out.println("Point "+validPointPositions.get(i)+" -> Point "+(validPointPositions.get(i)+roll1)+
-                        " and Point "+validPointPositions.get(j)+" -> Point "+(validPointPositions.get(j)+roll2));
+                        if(forward) {
+                            //for first player
+                            if (validPointPositions.get(i) == validPointPositions.get(j)) {
+                                // same point could be played with dice values
+                                System.out.println("Point " + validPointPositions.get(i) + " -> Point " + (validPointPositions.get(i) + roll1 + roll2));
+                            } else {
+                                // Point1,Point2 will be played with roll1 and roll2 respectively
+                                System.out.println("Point " + validPointPositions.get(i) + " -> Point " + (validPointPositions.get(i) + roll1) +
+                                        " and Point " + validPointPositions.get(j) + " -> Point " + (validPointPositions.get(j) + roll2));
+                            }
+                        }
+                        else{
+                            //for second player
+                            if(validPointPositions.get(i) == validPointPositions.get(j)){
+                                // same point could be played with dice values
+                                System.out.println("Point "+validPointPositions.get(i) +" -> Point "+ (validPointPositions.get(i)-roll1-roll2));
+                            }
+                            else {
+                                // Point1,Point2 will be played with roll1 and roll2 respectively
+                                System.out.println("Point " + validPointPositions.get(i) + " -> Point " + (validPointPositions.get(i) - roll1) +
+                                        " and Point " + validPointPositions.get(j) + " -> Point " + (validPointPositions.get(j) - roll2));
+                            }
+                        }
                     }
             }
         }
@@ -35,11 +55,7 @@ public class Move {
                         return true;
                     else{
                         //checkers to move in different type of points
-                        if(points[firstPoint+roll1+roll2].getSize()<=1){
-                            return true;
-                        }
-                        else
-                            return false;
+                        return points[firstPoint + roll1 + roll2].getSize() == 1;
                     }
                 }
                 else
@@ -55,7 +71,7 @@ public class Move {
                         firstMoveValid = true;
                     else{
                         //checkers to move in different type of points
-                        firstMoveValid = points[firstPoint + roll1].getSize() <= 1;
+                        firstMoveValid = points[firstPoint + roll1].getSize() == 1;
                     }
                 }
 
@@ -67,7 +83,7 @@ public class Move {
                         secondMoveValid = true;
                     else{
                         //checkers to move in different type of points
-                        secondMoveValid = points[firstPoint + roll1].getSize() <= 1;
+                        secondMoveValid = points[secondPoint + roll2].getSize() == 1;
                     }
                 }
 
@@ -76,21 +92,16 @@ public class Move {
         }
         else{
             //play points backward
-            //play points forward
             if(firstPoint == secondPoint){
                 //same points moves two times
                 if(firstPoint-roll1-roll2 >= 1){
-                    if (points[firstPoint+roll1+roll2].isEmpty())
+                    if (points[firstPoint-roll1-roll2].isEmpty())
                         return true;
                     else if (points[firstPoint].getType().equals(points[firstPoint-roll1-roll2].getType()))
                         return true;
                     else{
                         //checkers to move in different type of points
-                        if(points[firstPoint-roll1-roll2].getSize()<=1){
-                            return true;
-                        }
-                        else
-                            return false;
+                        return points[firstPoint - roll1 - roll2].getSize() == 1;
                     }
                 }
                 else
@@ -106,7 +117,7 @@ public class Move {
                         firstMoveValid = true;
                     else{
                         //checkers to move in different type of points
-                        firstMoveValid = points[firstPoint - roll1].getSize() <= 1;
+                        firstMoveValid = points[firstPoint - roll1].getSize() == 1;
                     }
                 }
 
@@ -118,7 +129,7 @@ public class Move {
                         secondMoveValid = true;
                     else{
                         //checkers to move in different type of points
-                        secondMoveValid = points[firstPoint - roll2].getSize() <= 1;
+                        secondMoveValid = points[firstPoint - roll2].getSize() == 1;
                     }
                 }
                 return firstMoveValid && secondMoveValid;
