@@ -6,6 +6,10 @@ public class Point{
     Stack<String> list= new Stack<>();
     private String type = "";
 
+    public Stack<String> getList() {
+        return list;
+    }
+
     public String getType() {
         return type;
     }
@@ -26,8 +30,11 @@ public class Point{
         if(!(checker.equals("O") || checker.equals("X") || checker.equals("="))){
             throw new RuntimeException("Wrong checker value added");
         }
-        list.add(checker);
-        setType(checker);
+        if(list.isEmpty())
+        {
+            setType(checker);
+        }
+        list.push(checker);
     }
 
 

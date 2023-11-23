@@ -1,16 +1,26 @@
 package game;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import static game.Move.getMoves;
+import static game.Move.makeMove;
 
 public class Game{
 
-    static Point[]  points= new Point[25];
-    static Point[] bars = new Point[3];
+    static Point[]  points= new Point[26];
+    //Points[0] - Lower Bar
+    //Points[1-24] - Checker Points
+    //Points[25] - Upper Bar
+    static HashMap<Integer, ArrayList<ArrayList<Integer>>> movesList = new HashMap<>();
+
     static Scanner scanner = new Scanner(System.in);
 
     public static void  main(String[] args){
+        User player1 = new User();
+        User player2 = new User();
+
 
         boolean quit = false;
         boolean turn = true;
@@ -20,34 +30,94 @@ public class Game{
         System.out.println("Welcome to the Game!");
         System.out.print("Enter name of Player1 : ");
         String username1 = scanner.nextLine();
+        player1.setUsername(username1);
+        player1.setType("X");
 
         System.out.print("Enter name of Player2 : ");
         String username2 = scanner.nextLine();
-        System.out.println("\n");
+        System.out.println();
+        player2.setUsername(username2);
+        player2.setType("O");
+        System.out.println("Rolling to decide who will play first");
+
+        int player1Roll = rollDice1();
+        System.out.println(username1 + " rolled a " + player1Roll);
+
+        int player2Roll = rollDice1();
+        System.out.println(username2 + " rolled a " + player2Roll);
+        System.out.println();
+
+        if(player1Roll >= player2Roll){
+            turn = true;
+            System.out.println(username1 + " plays first");
+        }
+        else{
+            turn = false;
+            System.out.println(username2 + " plays first");
+        }
+        System.out.println();
 
         while(!quit) {
             display();
-
-            String currentPlayer = turn ? username1 : username2;
-            System.out.println("\n");
-            System.out.println(currentPlayer + "'s turn:");
-    
-            switch (showMenu()) {
+            switch (showMenu(turn ? player1.getUsername():player2.getUsername() )) {
                 case 1:
                     int diceRoll1 = rollDice1();
                     int diceRoll2 = rollDice2();
+                    if(diceRoll1==diceRoll2)
+                        diceRoll2= diceRoll2+1;
 
                     System.out.println("\nRolled Dice values are: "+ diceRoll1 +"," + diceRoll2);
                     System.out.println();
                     //Move the checkers
                     if(turn)
                         //player 1
-                        getMoves("X", points, diceRoll1, diceRoll2, true);
+                        movesList = getMoves("X", points, diceRoll1, diceRoll2);
                     else
                         //player 2
-                        getMoves("O", points, diceRoll1, diceRoll2, false);
-                    System.out.println();
+                        movesList = getMoves("O", points, -diceRoll1, -diceRoll2);
 
+                    System.out.println(movesList);
+                    for(int key:movesList.keySet()){
+                        String command = new String(key+".");
+
+                        for(int i=0;i<movesList.get(key).size();i++){
+                            if(i>0)
+                                command+= " and";
+
+                            if(movesList.get(key).get(i).get(1)==-1)
+                                command+= (" Point"+movesList.get(key).get(i).get(0)+" BearOff");
+                            else {
+                                if(movesList.get(key).get(i).get(0) == 0 || movesList.get(key).get(i).get(0) == 25)
+                                    command += (" From Bar -> Point" + movesList.get(key).get(i).get(1));
+                                else
+                                    command += (" Point" + movesList.get(key).get(i).get(0) + " -> Point" + movesList.get(key).get(i).get(1));
+                            }
+
+                        }
+                        System.out.println(command);
+                    }
+
+                    System.out.println("Enter the command number from the list to make a move !!");
+                    int movechoice = scanner.nextInt();
+                    if (movesList.containsKey(movechoice)) {
+                        ArrayList<ArrayList<Integer>> selectedMoves = movesList.get(movechoice);
+                        for (ArrayList<Integer> move : selectedMoves) {
+                            int start = move.get(0);
+                            int end = move.get(1);
+
+                            if (turn) {
+                                boolean hit = makeMove(points, start, end, "X");
+                                if(hit) points[25].add("O");
+                            } else {
+                                boolean hit = makeMove(points, start, end, "O");
+                                if(hit) points[0].add("X");
+                            }
+                        }
+                    } else {
+                        System.out.println("Invalid move selection.");
+                    }
+
+                    movesList.clear();
                     break;
                 case 2:
                     quit = true;
@@ -56,8 +126,6 @@ public class Game{
                     System.out.println("Invalid option. Please try again.");
                     break;
             }
-    
-
             turn = !turn;
         }
 
@@ -79,28 +147,24 @@ public class Game{
         for(int i=0;i<points.length;i++){
             points[i] = new Point();
         }
-        for(int i=0;i<bars.length;i++){
-            bars[i] = new Point();
-        }
-
 
         addChecker(points[1], 2, "X");
         addChecker(points[6], 5, "O");
-        addChecker(bars[1], 5, "=");
         addChecker(points[8], 3, "O");
         addChecker(points[12], 5, "X");
 
         addChecker(points[13], 5, "O");
         addChecker(points[17], 3, "X");
-        addChecker(bars[2], 5, "=");
         addChecker(points[19], 5, "X");
         addChecker(points[24], 2, "O");
     }
 
-    public static int showMenu() {
-        System.out.println("\n1. Roll a dice");
+    public static int showMenu(String playerName) {
+        System.out.println();
+        System.out.println("1. Roll a dice");
         System.out.println("2. Quit");
-        System.out.print("Enter your choice: ");
+        System.out.print(playerName+", enter your choice: ");
+
         int choice = scanner.nextInt();
         return choice;
     }
@@ -109,28 +173,34 @@ public class Game{
     public static void display(){
         int bottomMax=0, topMax=0;
 
-        for(int i=13;i<=24; i++){
+        for(int i=13;i<=25; i++){
             topMax = Math.max(topMax, points[i].getSize());
         }
+//        topMax = Math.max(topMax, bars[2].getSize());
 
-        for(int i=1;i<=12; i++){
+        for(int i=0;i<=12; i++){
             bottomMax = Math.max(bottomMax, points[i].getSize());
         }
-
+//        bottomMax = Math.max(bottomMax, bars[1].getSize());
 
         String[][] lowerSection = new String[bottomMax][13];
         String[][] upperSection = new String[topMax][13];
 
-
         for(int i=0; i<topMax ;i++){
             for(int j=0; j<13; j++) {
-                upperSection[i][j] = "|";
+                if(j==6)
+                    upperSection[i][j] = "=";
+                else
+                    upperSection[i][j] = "|";
             }
         }
 
         for(int i=0; i<bottomMax ;i++){
             for(int j=0; j<13; j++) {
-                lowerSection[i][j] = "|";
+                if(j==6)
+                    lowerSection[i][j] = "=";
+                else
+                    lowerSection[i][j] = "|";
             }
         }
 
@@ -144,8 +214,8 @@ public class Game{
                 lowerSection[i][12-j+1] = points[j].list.get(i);
             }
         }
-        for(int i=0;i< bars[1].getSize();i++){
-            lowerSection[i][6] = bars[1].list.get(i);
+        for(int i=0;i< points[0].getSize();i++){
+            lowerSection[i][6] = points[0].list.get(i);
         }
 
 
@@ -159,8 +229,8 @@ public class Game{
                 upperSection[i][j-13+1] = points[j].list.get(i);
             }
         }
-        for(int i=0;i< bars[2].getSize();i++){
-            upperSection[i][6] = bars[2].list.get(i);
+        for(int i=0;i< points[25].getSize();i++){
+            upperSection[i][6] = points[25].list.get(i);
         }
 
         System.out.print("13");
@@ -190,7 +260,7 @@ public class Game{
         System.out.println();
 
         for(int i=0;i<topMax;i++){
-        for(int j=0;j<13;j++){
+            for(int j=0;j<13;j++){
                 if(upperSection[i][j].equals("X"))
                     System.out.print(getStyledString(upperSection[i][j],"\u001B[31m")+"   ");
                 else
@@ -222,13 +292,13 @@ public class Game{
             }
             else if(i < 6)
             {
-                st += "0"+ (i+1); 
+                st += "0"+ (i+1);
             }
             else
             {
                 if(i <= 9)
                 {
-                   st += "0";
+                    st += "0";
                 }
                 st += i;
             }
@@ -240,11 +310,11 @@ public class Game{
     }
 
     public static int rollDice1() {
-        return (int)(Math.random() * 6) + 1; 
+        return (int)(Math.random() * 6) + 1;
     }
 
     public static int rollDice2() {
-        return (int)(Math.random() * 6) + 1; 
+        return (int)(Math.random() * 6) + 1;
     }
 
 }

@@ -10,10 +10,14 @@ public class User {
         return type;
     }
 
-    User(String name, String type){
-        this.username = name;
+    public void setType(String type){
         this.type = type;
     }
+
+//    User(String name, String type){
+//        this.username = name;
+//        this.type = type;
+//    }
 
     public String getUsername()
     {
