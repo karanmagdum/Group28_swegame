@@ -7,25 +7,24 @@ import java.util.HashSet;
 
 public class Move {
 
-    static ArrayList<Integer> validPointPositions = new ArrayList<>();
-    static HashMap<Integer, ArrayList<ArrayList<Integer>>> map = new HashMap<>();
+    private static ArrayList<Integer> validPointPositions = new ArrayList<>();
+    private static HashMap<Integer, ArrayList<ArrayList<Integer>>> map = new HashMap<>();
 
-    public static boolean isOff(){
+    public static boolean isBearOff(){
         boolean bearOffPlayer1 = true, bearOffPlayer2 = true;
         for(int i:validPointPositions){
-            if(i<19)
+            if(i<19 || i>24)
                 bearOffPlayer1 = false;
-            else if(i>6 )
+            if(i<1 || i>6)
                 bearOffPlayer2 = false;
         }
         return bearOffPlayer1 || bearOffPlayer2;
     }
 
-    static void showOffMoves(Point[] points, int roll1, int roll2){
+    private static void getBearOffMoves(Point[] points, int roll1, int roll2){
         //If same role dice
         int mapKey  = 1;
         if(roll1 == roll2){
-            HashSet<String> set = new HashSet<>();
             for (int i: validPointPositions){
                 for(int j: validPointPositions){
                     for(int k: validPointPositions){
@@ -35,48 +34,14 @@ public class Move {
                             pointsCountMap.put(j, pointsCountMap.getOrDefault(j,0)+1);
                             pointsCountMap.put(k, pointsCountMap.getOrDefault(k,0)+1);
                             pointsCountMap.put(l, pointsCountMap.getOrDefault(l,0)+1);
-                            StringBuilder temp = new StringBuilder();
                             ArrayList<ArrayList<Integer>> moves = new ArrayList<ArrayList<Integer>>();
-
-                            if (pointsCountMap.size() == 1) {
-                                //Same point move roll1 * 4 times
-                                for (int key : pointsCountMap.keySet())
-                                    if ((key + roll1 + roll1 + roll1 + roll1) > 24 || (key + roll1 + roll1 + roll1 + roll1) < 1) {
-                                        temp.append("Point ").append(key).append("BearOFF");
-                                        moves.add(new ArrayList<Integer>(Arrays.asList(key,-1)));
-                                    }
-                            } else if (pointsCountMap.size() == 2) {
-                                //Two points move roll1 * 2 times each
-                                for (int key : pointsCountMap.keySet())
-                                    if ((key + roll1 + roll1) < 1 || (key + roll1 + roll1) > 24) {
-                                        temp.append("Point ").append(key).append("BearOFF");
-                                        moves.add(new ArrayList<Integer>(Arrays.asList(key, -1)));
-                                    }
-                            } else if (pointsCountMap.size() == 3) {
-                                //One point move roll1 * 2 times and remaining points roll1 times
-                                for (int key : pointsCountMap.keySet()) {
-                                    if (pointsCountMap.get(key) > 1) {
-                                        if ((key + roll1 + roll1) < 1  || (key + roll1 + roll1) > 24) {
-                                            temp.append("Point ").append(key).append("BearOFF");
-                                            moves.add(new ArrayList<Integer>(Arrays.asList(key,-1)));
-                                        }
-                                    } else if ((key + roll1) < 1 || (key + roll1) > 24 ) {
-                                        temp.append("Point ").append(key).append("BearOFF");
-                                        moves.add(new ArrayList<Integer>(Arrays.asList(key,-1)));
-                                    }
+                            for (int key : pointsCountMap.keySet()){
+                                int numOfRolls = pointsCountMap.get(key);
+                                if((key+roll1*numOfRolls)<1 || (key+roll1*numOfRolls)>24){
+                                    moves.add(new ArrayList<Integer>(Arrays.asList(key,-1)));
                                 }
                             }
-                            else {
-                                // All points i, j, k and l move roll1 times
-                                for (int key : pointsCountMap.keySet()) {
-                                    if((key+roll1) < 1 || (key+roll1) > 24){
-                                        temp.append("Point ").append(key).append("BearOFF");
-                                        moves.add(new ArrayList<Integer>(Arrays.asList(key,-1)));
-                                    }
-                                }
-                            }
-                            if(!temp.isEmpty() && !set.contains(temp.toString())) {
-                                set.add(temp.toString());
+                            if(moves.size() == pointsCountMap.size()) {
                                 map.put(mapKey++, moves);
                             }
                         }
@@ -87,41 +52,53 @@ public class Move {
         else {
             for (int i : validPointPositions) {
                 for (int j : validPointPositions) {
-                    map.put(mapKey, new ArrayList<ArrayList<Integer>>());
                     if(i==j) {
-                        if ((i + roll1 + roll2) > 24 || (i + roll1 + roll2) < 1)
-                            map.get(mapKey).add(new ArrayList<Integer>(Arrays.asList(i,-1)));
+                        if ((i + roll1 + roll2)<1 || (i + roll1 + roll2)>24) {
+                            map.put(mapKey, new ArrayList<ArrayList<Integer>>());
+                            map.get(mapKey++).add(new ArrayList<Integer>(Arrays.asList(i, -1)));
+                        }
                     }
                     else {
-                        if((i+roll1) >24 || (i+roll1) <1)
-                            map.get(mapKey).add(new ArrayList<Integer>(Arrays.asList(i,-1)));
-                        if((j+roll2) >24 || (j+roll2) <1)
-                            map.get(mapKey).add(new ArrayList<Integer>(Arrays.asList(j,-1)));
+                        ArrayList<ArrayList<Integer>> moves = new ArrayList<ArrayList<Integer>>();
+                        boolean foundAtleastOneMove = false;
+                        if((i+roll1) >24 || (i+roll1) <1) {
+                            moves.add(new ArrayList<Integer>(Arrays.asList(i, -1)));
+                            foundAtleastOneMove = true;
+                        }
+                        if((j+roll2) >24 || (j+roll2) <1) {
+                            moves.add(new ArrayList<Integer>(Arrays.asList(j, -1)));
+                            foundAtleastOneMove = true;
+                        }
+                        if(foundAtleastOneMove){
+                            map.put(mapKey++, moves);
+                        }
                     }
-                    mapKey++;
 
                 }
             }
         }
     }
-    public static HashMap getMoves(String type, Point[] points, int roll1, int roll2){
-        //find points of given value of "type" parameter
-        for(int i=0;i<points.length;i++){
-            if(!points[i].isEmpty() && points[i].getType().equals(type)){
+    public static HashMap getMoves(Point.Checker checker, Point[] points, int roll1, int roll2){
+        //clear old context
+        validPointPositions.clear();
+        map.clear();
+        int mapKey = 1;
 
+        //find points of given checker type
+        for(int i=0;i<points.length;i++){
+            if(points[i].equals(checker)){
                 validPointPositions.add(i);
             }
         }
-//        System.out.println("ValidPositions:"+validPointPositions);
-        int mapKey = 1;
+
         //Rule - Off
-        if(isOff()){
-            showOffMoves(points, roll1, roll2);
+        if(isBearOff()){
+            getBearOffMoves(points, roll1, roll2);
         }
         else {
 
             if(roll1 == roll2){
-                System.out.println("same dice");
+                System.out.println("same dice:"+roll1);
                 HashSet<String> set = new HashSet<>();
                 //Rule - Same dice roll
                 // Four points could be moved with value of roll1
@@ -129,78 +106,34 @@ public class Move {
                     for (int j=i; j<validPointPositions.size();j++)
                         for (int k=j; k<validPointPositions.size();k++)
                             for(int l=k; l<validPointPositions.size();l++){
-//                                if(type.equals("X") && !points[0].isEmpty() && (i!=0 || j!=0 || k!=0 || l!=0)) {
-//                                    continue;
-//                                }
-//                                else if(type.equals("O") && !points[25].isEmpty() && (i!=25 || j!=25 || k!=25 || l!=25)) {
-//                                    continue;
-//                                }
-
                                 HashMap<Integer, Integer> pointsCountMap = new HashMap<>();
                                 pointsCountMap.put(validPointPositions.get(i), pointsCountMap.getOrDefault(validPointPositions.get(i),0)+1);
                                 pointsCountMap.put(validPointPositions.get(j), pointsCountMap.getOrDefault(validPointPositions.get(j),0)+1);
                                 pointsCountMap.put(validPointPositions.get(k), pointsCountMap.getOrDefault(validPointPositions.get(k),0)+1);
                                 pointsCountMap.put(validPointPositions.get(l), pointsCountMap.getOrDefault(validPointPositions.get(l),0)+1);
 
-                                StringBuilder temp = new StringBuilder();
                                 ArrayList<ArrayList<Integer>> moves = new ArrayList<ArrayList<Integer>>();
-                                    if (pointsCountMap.size() == 1) {
-                                        //Same point move roll1 * 4 times
-                                        for (int key : pointsCountMap.keySet())
-                                            if ((key + roll1 + roll1 + roll1 + roll1) >= 1 && (key + roll1 + roll1 + roll1 + roll1) <= 24) {
-                                                temp.append("Point").append(key).append("->Point").append(key + (roll1 * 4));
-                                                moves.add(new ArrayList<Integer>(Arrays.asList(key,(key + roll1 * 4))));
-                                            }
-                                    } else if (pointsCountMap.size() == 2) {
-                                        //Two points move roll1 * 2 times each
-                                        for (int key : pointsCountMap.keySet())
-                                            if ((key + roll1 + roll1) >= 1 && (key + roll1 + roll1) <= 24)
-                                                moves.add(new ArrayList<Integer>(Arrays.asList(key,(key + roll1 * 2))));
-                                    } else if (pointsCountMap.size() == 3) {
-                                        //One point move roll1 * 2 times and remaining points roll1 times
-                                        for (int key : pointsCountMap.keySet()) {
-                                            if (pointsCountMap.get(key) > 1) {
-                                                if ((key + roll1 + roll1) >= 1 && (key + roll1 + roll1) <= 24)
-                                                    moves.add(new ArrayList<Integer>(Arrays.asList(key,(key + (roll1 * 2)))));
-                                            } else if ((key + roll1) >= 1 && (key + roll1) <= 24)
-                                                moves.add(new ArrayList<Integer>(Arrays.asList(key,(key + roll1))));
-                                        }
+                                for (int key : pointsCountMap.keySet()){
+                                    int numOfRolls = pointsCountMap.get(key);
+                                    if(isValidMove(points, key, roll1*numOfRolls) && areBarsClearable(key)){
+                                        moves.add(new ArrayList<Integer>(Arrays.asList(key,key+roll1*numOfRolls)));
                                     }
-                                    else {
-                                        // All points i, j, k and l move roll1 times
-                                        for (int key : pointsCountMap.keySet()) {
-                                            if((key+roll1) >= 1 && (key+roll1) <= 24)
-                                                moves.add(new ArrayList<Integer>(Arrays.asList(key,(key + roll1))));
-                                        }
-                                    }
-                                    if(!temp.isEmpty() && !set.contains(temp.toString())) {
-                                        set.add(temp.toString());
-                                        map.put(mapKey++, moves);
-                                    }
+                                }
+                                if(moves.size() == pointsCountMap.size()) {
+                                    map.put(mapKey++, moves);
+                                }
                             }
-
-//                System.out.println(map);
             }
             else {
                 for (int i : validPointPositions) {
                     for (int j : validPointPositions) {
-                        if (isValidMove(points, i, roll1, j, roll2)) {
-//                            System.out.println(points[0].getSize()+" and "+ points[25].getSize());
-                            if(points[0].isEmpty() && (i==0 && j==0)) {
-                                continue;
-                            }
-                            else if(points[25].isEmpty() && (i==25 || j==25)) {
-                                continue;
-                            }
-
+                        if (isValidMove(points, i, roll1, j, roll2) && (areBarsClearable(i) || areBarsClearable(j))) {
                             map.put(mapKey, new ArrayList<ArrayList<Integer>>());
                             if (i == j) {
                                 // same point could be played with dice values
                                 map.get(mapKey).add(new ArrayList<Integer>(Arrays.asList(i,i + roll1 + roll2)));
                             } else {
                                 // Point1,Point2 will be played with roll1 and roll2 respectively
-//                                System.out.println("Point " + i + " -> Point " + (i + roll1) +
-//                                        " and Point " + j + " -> Point " + (j + roll2));
                                 map.get(mapKey).add(new ArrayList<Integer>(Arrays.asList(i,i + roll1)));
                                 map.get(mapKey).add(new ArrayList<Integer>(Arrays.asList(j,j + roll2)));
                             }
@@ -218,69 +151,60 @@ public class Move {
         return map;
     }
 
-    public static boolean isValidMove(Point[] points, int firstPoint, int roll1, int secondPoint, int roll2){
-            //play points forward
-            if(firstPoint == secondPoint){
-                //same points moves two times
-                if((firstPoint+roll1+roll2) >=1 && (firstPoint+roll1+roll2) <=24){
-                    if (points[firstPoint+roll1+roll2].isEmpty())
-                        return true;
-                    else if (points[firstPoint].getType().equals(points[firstPoint+roll1+roll2].getType()))
-                        return true;
-                    else{
-                        //checkers to move in different type of points
-                        return points[firstPoint + roll1 + roll2].getSize() == 1;
-                    }
-                }
-                else
-                    return false;
-            }
+    private static boolean isValidMove(Point [] points, int position, int roll){
+        boolean isValid = false;
+        //move points[position] with roll value
+        if((position+roll) >=1 && (position+roll) <=24){
+            if (points[position+roll].isEmpty())
+                isValid = true;
+            else if (points[position].equals(points[position+roll]))
+                isValid = true;
             else{
-                // movement of two points
-
-                boolean firstMoveValid = false;
-                if((firstPoint+roll1) >=1 && (firstPoint+roll1) <=24){
-                    if (points[firstPoint+roll1].isEmpty())
-                        firstMoveValid =  true;
-                    else if (points[firstPoint].getType().equals(points[firstPoint+roll1].getType()))
-                        firstMoveValid = true;
-                    else{
-                        //checkers to move in different type of points
-                        firstMoveValid = points[firstPoint + roll1].getSize() == 1;
-                    }
-                }
-                boolean secondMoveValid = false;
-                if((secondPoint+roll2) >=1 && (secondPoint+roll2) <=24){
-                    if (points[secondPoint+roll2].isEmpty())
-                        secondMoveValid =  true;
-                    else if (points[secondPoint].getType().equals(points[secondPoint+roll2].getType()))
-                        secondMoveValid = true;
-                    else{
-                        //checkers to move in different type of points
-                        secondMoveValid = points[secondPoint + roll2].getSize() == 1;
-                    }
-                }
-
-                return firstMoveValid && secondMoveValid;
+                //checkers to move across different type of points
+                isValid = points[position+roll].getSize() == 1;
             }
+        }
+        return isValid;
     }
 
-    public static boolean makeMove(Point[] points,int start, int end,String type)
-    {
-        boolean markedHit = false;
-        if(end != -1){
-            //If end==-1 then BearOFF
-            if(points[end].getSize()==1) {
-                //marked hit
-                markedHit = true;
-                points[end].getList().pop();
-            }
-            points[end].add(type);
+    private static boolean areBarsClearable(int position){
+        //Check if in hit condition, all checkers should be cleared from Bar
+        return (validPointPositions.contains(0) == (position == 0)) && (validPointPositions.contains(25) == (position == 25)) ;
+    }
 
+    private static boolean isValidMove(Point[] points, int firstPoint, int roll1, int secondPoint, int roll2){
+        boolean isValid = false;
+        //move one point forward with roll1 and roll2
+        if(firstPoint == secondPoint){
+            //same points moves two times
+            isValid = isValidMove(points, firstPoint, roll1+roll2) && areBarsClearable(firstPoint);
+        }
+        else{
+            // movement of two points
+            boolean firstMoveValid = isValidMove(points, firstPoint, roll1) ;
+            boolean secondMoveValid = isValidMove(points, secondPoint, roll2);;
+            isValid = firstMoveValid && secondMoveValid;
+        }
+        return isValid;
+    }
+
+    public static void makeMove(Point[] points,int start, int end,Point.Checker checker)
+    {
+        //If end==-1 then BearOFF directly
+        //else check if Hitting condition is met and
+        if(end != -1){
+            //If marked hit then move destination point checker to Bar
+            if(!points[start].equals(points[end]) && points[end].getSize()==1) {
+                if(points[end].equals(Point.Checker.X)){
+                    points[0].add(points[end].getList().pop());
+                }
+                else{
+                    points[25].add(points[end].getList().pop());
+                }
+            }
+            points[end].add(checker);
         }
         points[start].getList().pop();
-
-        return markedHit;
     }
 
 }
