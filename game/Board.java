@@ -87,9 +87,9 @@ public class Board {
             upperSection[i][6] = points[25].getList().get(i).toString();
         }
 
-        System.out.println("========================GAME=BOARD========================|=========SCORE=BOARD========== ");
+        System.out.println("\t========================GAME=BOARD========================|=====SCORE=BOARD=====");
 
-        System.out.print("\t13");
+        System.out.print("\t\t13");
         for(int i = 14; i<26;i++)
         {
             String st = "";
@@ -110,13 +110,13 @@ public class Board {
         }
 
         System.out.print(" OFF|");
-        System.out.println("\t\t"+player1.getUsername()+": "+player1.getScore()+"  |  "+player2.getUsername()+": "+player2.getScore());
+        System.out.println("\t"+player1.getUsername()+": "+player1.getScore()+" | "+player2.getUsername()+": "+player2.getScore());
         displayUpperPips(points, flag);
 
         System.out.println();
 
         for(int i=0;i<topMax;i++){
-            System.out.print("\t");
+            System.out.print("\t\t");
             for(int j=0;j<13;j++){
                 if(upperSection[i][j].equals("X"))
                     System.out.print(Game.getStyledString(upperSection[i][j],"\u001B[31m")+"   ");
@@ -130,7 +130,7 @@ public class Board {
         System.out.println();
 
         for(int i=0;i<bottomMax;i++){
-            System.out.print("\t");
+            System.out.print("\t\t");
             for(int j=0;j<13;j++){
                 if(lowerSection[bottomMax-1-i][j].equals("X"))
                     System.out.print(Game.getStyledString(lowerSection[bottomMax-1-i][j],"\u001B[31m")+"   ");
@@ -142,7 +142,7 @@ public class Board {
         }
         displayLowerPips(points, flag);
         System.out.println();
-        System.out.print("\t12");
+        System.out.print("\t\t12");
 
         for(int i = 11; i>-1;i--)
         {
@@ -167,7 +167,7 @@ public class Board {
             System.out.print(formatted);
         }
 
-        System.out.print(" OFF");
+        System.out.print(" OFF|");
         System.out.println();
     }
 
@@ -182,60 +182,44 @@ public class Board {
     }
      public static void displayUpperPips(Point[] points, boolean flag){
          int[] pipCounts = PipCount.countIndividualPip(points, flag);
-         System.out.print("PIP ");
+         System.out.print("\tPIP ");
          if(pipCounts[13]>0)
              System.out.print(pipCounts[13]);
          else
              System.out.print(" ");
 
          for(int i=14;i<=18;i++){
-             String st = "";
-             if(pipCounts[i]>0){
-                 st+= pipCounts[i];
-             }
-             else
-                 st+= " ";
-             System.out.print(String.format("%"+ 4 +"s", st));
+             System.out.print(String.format("%"+ 4 +"s", pipCounts[i]>0?pipCounts[i]:" "));
          }
-         System.out.print("    ");
+         if(pipCounts[13]>0)
+            System.out.print(String.format("%"+ 3 +"s","="));
+         else
+            System.out.print(String.format("%"+ 4 +"s","="));
+
 
          for(int i=19;i<=24;i++){
-             String st = "";
-             if(pipCounts[i]>0){
-                 st+= pipCounts[i];
-             }
-             else
-                 st+= " ";
-             System.out.print(String.format("%"+ 4 +"s", st));
+             System.out.print(String.format("%"+ 4 +"s", pipCounts[i]>0?pipCounts[i]:" "));
          }
      }
 
      public static void displayLowerPips(Point[] points, boolean flag){
          int[] pipCounts = PipCount.countIndividualPip(points, flag);
-         System.out.print("PIP ");
+         System.out.print("\tPIP ");
          if(pipCounts[12]>0)
              System.out.print(pipCounts[12]);
          else
              System.out.print(" ");
 
          for(int i=11;i>=7;i--){
-             String st = "";
-             if(pipCounts[i]>0){
-                 st+= pipCounts[i];
-             }
-             else
-                 st+= " ";
-             System.out.print(String.format("%"+ 4 +"s", st));
+             System.out.print(String.format("%"+ 4 +"s", pipCounts[i]>0?pipCounts[i]:" "));
          }
-         System.out.print("   ");
+         if(pipCounts[12]>0)
+             System.out.print(String.format("%"+ 3 +"s","="));
+         else
+             System.out.print(String.format("%"+ 4 +"s","="));
 
          for(int i=6;i>=1;i--) {
-             String st = "";
-             if (pipCounts[i] > 0) {
-                 st += pipCounts[i];
-             } else
-                 st += " ";
-             System.out.print(String.format("%" + 4 + "s", st));
+             System.out.print(String.format("%" + 4 + "s", pipCounts[i]>0?pipCounts[i]:" "));
          }
 
     }

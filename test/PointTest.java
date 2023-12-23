@@ -1,5 +1,6 @@
-package game;
+package test;
 
+import game.Point;
 import game.Triangle.Checker;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

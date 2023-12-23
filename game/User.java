@@ -16,7 +16,7 @@ public class User {
         this.score += score;
     }
 
-    User(String name) { this.username = name; this.score=0; }
+    public User(String name) { this.username = name; this.score=0; }
     public String getUsername()
     {
         return username;

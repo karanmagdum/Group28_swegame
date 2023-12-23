@@ -1,8 +1,8 @@
-package game;
+package test;
 
+import game.User;
 import org.junit.Before;
 import org.junit.Test;
-import game.Triangle.Checker;
 
 import static org.junit.Assert.*;
 

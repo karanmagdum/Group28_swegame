@@ -1,5 +1,7 @@
-package game;
+package test;
 
+import game.Move;
+import game.Point;
 import game.Triangle.Checker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

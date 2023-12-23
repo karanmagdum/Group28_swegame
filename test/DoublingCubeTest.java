@@ -1,4 +1,6 @@
-package game;
+package test;
+import game.DoublingCube;
+import game.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import java.io.ByteArrayOutputStream;
