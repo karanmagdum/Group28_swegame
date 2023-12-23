@@ -8,15 +8,30 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This class is responsible for reading and processing actions from a CSV file for a Backgammon game.
+ * It supports various actions like rolling dice, quitting the game, ending the test, and checking pip counts.
+ */
 public class TestFile {
 
+    /**
+     * Enumeration of possible actions that can be read from the test file.
+     */
     public enum Action {
         ROLL,
         QUIT,
         END,
         PIP
     }
-
+ 
+    /**
+     * Reads and processes actions from a CSV file to simulate game actions.
+     *
+     * @param points The array of Point objects representing the game board.
+     * @param player1 The first player of the game.
+     * @param player2 The second player of the game.
+     * @return true if the QUIT action is read; false otherwise.
+     */
     public boolean readTestFile(Point[]  points, User player1, User player2) {
         String csvFilePath = "game\\Test.csv"; // Replace with the actual path to your CSV file
 
@@ -75,6 +90,12 @@ public class TestFile {
         return false;
     }
 
+    /**
+     * Parses a string to an Action enum value.
+     *
+     * @param actionString The string representation of an action.
+     * @return The corresponding Action enum value, or null if the string does not match any Action.
+     */
     private static Action parseAction(String actionString) {
         try {
             return Action.valueOf(actionString.trim().toUpperCase());
