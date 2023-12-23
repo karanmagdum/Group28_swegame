@@ -1,29 +1,32 @@
 package game;
 
+import game.Triangle.Checker;
+
 public class Board {
-    public static void addChecker(Point point, int count, Point.Checker checker){
+    public void addChecker(Point point, int count, Checker checker){
         for(int i=1;i<=count;i++){
             point.add(checker);
         }
     }
-    public static void assignCheckers(Point[] points){
+    public void assignCheckers(Point[] points){
         for(int i=0;i<points.length;i++){
             points[i] = new Point();
         }
         //Player 1
-        addChecker(points[1], 2, Point.Checker.X);
-        addChecker(points[12], 5, Point.Checker.X);
-        addChecker(points[17], 3, Point.Checker.X);
-        addChecker(points[19], 5, Point.Checker.X);
+        addChecker(points[1], 2, Checker.X);
+        addChecker(points[12], 5, Checker.X);
+        addChecker(points[17], 3, Checker.X);
+        addChecker(points[19], 5, Checker.X);
         //Player 2
-        addChecker(points[8], 3, Point.Checker.O);
-        addChecker(points[6], 5, Point.Checker.O);
-        addChecker(points[13], 5, Point.Checker.O);
-        addChecker(points[24], 2, Point.Checker.O);
+        addChecker(points[8], 3, Checker.O);
+        addChecker(points[6], 5, Checker.O);
+        addChecker(points[13], 5, Checker.O);
+        addChecker(points[24], 2, Checker.O);
     }
 
     //Display - refactor this
-    public static void display(Point[] points){
+    public void display(boolean flag, Point[] points, User player1, User player2){
+
         int bottomMax=0, topMax=0;
 
         for(int i=13;i<=25; i++){
@@ -84,7 +87,9 @@ public class Board {
             upperSection[i][6] = points[25].getList().get(i).toString();
         }
 
-        System.out.print("13");
+        System.out.println("========================GAME=BOARD========================|=========SCORE=BOARD========== ");
+
+        System.out.print("\t13");
         for(int i = 14; i<26;i++)
         {
             String st = "";
@@ -104,35 +109,40 @@ public class Board {
             System.out.print(formatted);
         }
 
-        System.out.print(" OFF");
-
-        System.out.println();
+        System.out.print(" OFF|");
+        System.out.println("\t\t"+player1.getUsername()+": "+player1.getScore()+"  |  "+player2.getUsername()+": "+player2.getScore());
+        displayUpperPips(points, flag);
 
         System.out.println();
 
         for(int i=0;i<topMax;i++){
+            System.out.print("\t");
             for(int j=0;j<13;j++){
                 if(upperSection[i][j].equals("X"))
                     System.out.print(Game.getStyledString(upperSection[i][j],"\u001B[31m")+"   ");
                 else
                     System.out.print(upperSection[i][j]+"   ");
             }
-            System.out.println("\n");
+
+            System.out.println();
         }
 
         System.out.println();
 
         for(int i=0;i<bottomMax;i++){
+            System.out.print("\t");
             for(int j=0;j<13;j++){
                 if(lowerSection[bottomMax-1-i][j].equals("X"))
                     System.out.print(Game.getStyledString(lowerSection[bottomMax-1-i][j],"\u001B[31m")+"   ");
                 else
                     System.out.print(lowerSection[bottomMax-1-i][j]+"   ");
             }
-            System.out.println("\n");
-        }
 
-        System.out.print("12");
+            System.out.println();
+        }
+        displayLowerPips(points, flag);
+        System.out.println();
+        System.out.print("\t12");
 
         for(int i = 11; i>-1;i--)
         {
@@ -158,9 +168,77 @@ public class Board {
         }
 
         System.out.print(" OFF");
+        System.out.println();
+    }
+
+    public static void displayPip(String player1Name, String player2Name, int player1Pip, int player2Pip){
+        System.out.println("Pip count for "+player1Name+" = "+player1Pip);
+        System.out.println("Pip count for "+player2Name+" = "+player2Pip);
+        System.out.println("\n");
     }
 
     public static int rollDice() {
         return (int)(Math.random() * 6) + 1;
     }
+     public static void displayUpperPips(Point[] points, boolean flag){
+         int[] pipCounts = PipCount.countIndividualPip(points, flag);
+         System.out.print("PIP ");
+         if(pipCounts[13]>0)
+             System.out.print(pipCounts[13]);
+         else
+             System.out.print(" ");
+
+         for(int i=14;i<=18;i++){
+             String st = "";
+             if(pipCounts[i]>0){
+                 st+= pipCounts[i];
+             }
+             else
+                 st+= " ";
+             System.out.print(String.format("%"+ 4 +"s", st));
+         }
+         System.out.print("    ");
+
+         for(int i=19;i<=24;i++){
+             String st = "";
+             if(pipCounts[i]>0){
+                 st+= pipCounts[i];
+             }
+             else
+                 st+= " ";
+             System.out.print(String.format("%"+ 4 +"s", st));
+         }
+     }
+
+     public static void displayLowerPips(Point[] points, boolean flag){
+         int[] pipCounts = PipCount.countIndividualPip(points, flag);
+         System.out.print("PIP ");
+         if(pipCounts[12]>0)
+             System.out.print(pipCounts[12]);
+         else
+             System.out.print(" ");
+
+         for(int i=11;i>=7;i--){
+             String st = "";
+             if(pipCounts[i]>0){
+                 st+= pipCounts[i];
+             }
+             else
+                 st+= " ";
+             System.out.print(String.format("%"+ 4 +"s", st));
+         }
+         System.out.print("   ");
+
+         for(int i=6;i>=1;i--) {
+             String st = "";
+             if (pipCounts[i] > 0) {
+                 st += pipCounts[i];
+             } else
+                 st += " ";
+             System.out.print(String.format("%" + 4 + "s", st));
+         }
+
+    }
+
 }
+
