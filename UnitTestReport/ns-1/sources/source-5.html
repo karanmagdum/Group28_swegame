@@ -1,0 +1,158 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PointTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">test</a>
+</div>
+
+<h1>Coverage Summary for Class: PointTest (test)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PointTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (21/21)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package test;
+&nbsp;
+&nbsp;import game.Point;
+&nbsp;import game.Triangle.Checker;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;import static org.junit.jupiter.api.Assertions.*;
+&nbsp;
+<b class="fc">&nbsp;public class PointTest {</b>
+&nbsp;    @Test
+&nbsp;    public void testAdd() {
+<b class="fc">&nbsp;        Point point = new Point();</b>
+&nbsp;
+<b class="fc">&nbsp;        assertTrue(point.isEmpty());</b>
+&nbsp;
+<b class="fc">&nbsp;        point.add(Checker.X);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertFalse(point.isEmpty());</b>
+<b class="fc">&nbsp;        assertEquals(1, point.getSize());</b>
+<b class="fc">&nbsp;        assertTrue(point.equals(Checker.X));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testAddWithException() {
+<b class="fc">&nbsp;        Point point = new Point();</b>
+&nbsp;
+<b class="fc">&nbsp;        assertTrue(point.isEmpty());</b>
+&nbsp;
+<b class="fc">&nbsp;        point.add(Checker.X);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertFalse(point.isEmpty());</b>
+<b class="fc">&nbsp;        assertEquals(1, point.getSize());</b>
+<b class="fc">&nbsp;        assertTrue(point.equals(Checker.X));</b>
+&nbsp;
+&nbsp;        // Adding a different checker should throw an exception
+<b class="fc">&nbsp;        assertThrows(RuntimeException.class, () -&gt; point.add(Checker.O));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testEqualsObject() {
+<b class="fc">&nbsp;        Point point1 = new Point();</b>
+<b class="fc">&nbsp;        Point point2 = new Point();</b>
+&nbsp;
+<b class="fc">&nbsp;        assertFalse(point1.equals(point2));</b>
+&nbsp;
+<b class="fc">&nbsp;        point1.add(Checker.X);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertFalse(point1.equals(point2));</b>
+&nbsp;
+&nbsp;        // Adding a same checker should make the points equal
+<b class="fc">&nbsp;        point2.add(Checker.X);</b>
+<b class="fc">&nbsp;        assertTrue(point1.equals(point2));</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-24 13:09</div>
+</div>
+</body>
+</html>

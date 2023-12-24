@@ -33,7 +33,7 @@ public class TestFile {
      * @return true if the QUIT action is read; false otherwise.
      */
     public boolean readTestFile(Point[]  points, User player1, User player2) {
-        String csvFilePath = "game\\Test.csv"; // Replace with the actual path to your CSV file
+        String csvFilePath = "game//Test.csv"; // Replace with the actual path to your CSV file
 
         Path path = Paths.get(csvFilePath);
 

@@ -1,0 +1,180 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PipCountTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">test</a>
+</div>
+
+<h1>Coverage Summary for Class: PipCountTest (test)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PipCountTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (39/39)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package test;
+&nbsp;
+&nbsp;import game.Point;
+&nbsp;import game.PipCount;
+&nbsp;import game.Triangle;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;import static org.junit.jupiter.api.Assertions.*;
+&nbsp;
+<b class="fc">&nbsp;class PipCountTest {</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    void testCountIndividualPip() {
+&nbsp;        // Create a test scenario where it&#39;s player X&#39;s turn
+<b class="fc">&nbsp;        Point[] pointsX = createTestPointsForPlayerX();</b>
+<b class="fc">&nbsp;        int[] pipCountX = PipCount.countIndividualPip(pointsX, true);</b>
+<b class="fc">&nbsp;        for(int i=1;i&lt;=24;i++)</b>
+<b class="fc">&nbsp;            System.out.print(pipCountX[i]+&quot; &quot;);</b>
+<b class="fc">&nbsp;        assertArrayEquals(new int[]{0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 10, 0, 0, 0, 0, 15, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0}, pipCountX);</b>
+<b class="fc">&nbsp;        System.out.println();</b>
+&nbsp;        // Create a test scenario where it&#39;s player O&#39;s turn
+<b class="fc">&nbsp;        Point[] pointsO = createTestPointsForPlayerO();</b>
+<b class="fc">&nbsp;        int[] pipCountO = PipCount.countIndividualPip(pointsO, false);</b>
+<b class="fc">&nbsp;        for(int i=1;i&lt;=24;i++)</b>
+<b class="fc">&nbsp;            System.out.print(pipCountO[i]+&quot; &quot;);</b>
+<b class="fc">&nbsp;        assertArrayEquals(new int[]{0, 24, 23, 22, 21, 0, 19, 18, 17, 16, 0, 14, 13, 12, 11, 0, 9, 8, 7, 6, 0, 4, 3, 2, 1, 0}, pipCountO);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Test
+&nbsp;    void testCountTotalPip() {
+&nbsp;        // Create a test scenario
+<b class="fc">&nbsp;        Point[] points = createTestPointsForTotalPip();</b>
+<b class="fc">&nbsp;        PipCount pipCounter = new PipCount();</b>
+<b class="fc">&nbsp;        int[] totalPip = pipCounter.countTotalPip(points);</b>
+<b class="fc">&nbsp;        assertArrayEquals(new int[]{50, 250}, totalPip);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Point[] createTestPointsForPlayerX() {
+<b class="fc">&nbsp;        Point[] points = new Point[26];</b>
+<b class="fc">&nbsp;        points[0] = new Point();</b>
+<b class="fc">&nbsp;        points[25] = new Point();</b>
+<b class="fc">&nbsp;        for (int i = 1; i &lt;= 24; i++) {</b>
+<b class="fc">&nbsp;            points[i] = new Point();</b>
+<b class="fc">&nbsp;            if (i % 5 == 0) {</b>
+<b class="fc">&nbsp;                points[i].add(Triangle.Checker.X);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return points;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Point[] createTestPointsForPlayerO() {
+<b class="fc">&nbsp;        Point[] points = new Point[26];</b>
+<b class="fc">&nbsp;        points[0] = new Point();</b>
+<b class="fc">&nbsp;        points[25] = new Point();</b>
+<b class="fc">&nbsp;        for (int i = 1; i &lt;= 24; i++) {</b>
+<b class="fc">&nbsp;            points[i] = new Point();</b>
+<b class="fc">&nbsp;            if (i % 5 != 0) {</b>
+<b class="fc">&nbsp;                points[i].add(Triangle.Checker.O);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return points;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private Point[] createTestPointsForTotalPip() {
+<b class="fc">&nbsp;        Point[] points = new Point[26];</b>
+<b class="fc">&nbsp;        for (int i = 1; i &lt;= 24; i++) {</b>
+<b class="fc">&nbsp;            points[i] = new Point();</b>
+<b class="fc">&nbsp;            if (i % 5 == 0) {</b>
+<b class="fc">&nbsp;                points[i].add(Triangle.Checker.X);</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                points[i].add(Triangle.Checker.O);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return points;</b>
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-24 13:09</div>
+</div>
+</body>
+</html>

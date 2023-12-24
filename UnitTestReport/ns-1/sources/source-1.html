@@ -1,0 +1,160 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > BoardTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">test</a>
+</div>
+
+<h1>Coverage Summary for Class: BoardTest (test)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BoardTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (24/24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package test;
+&nbsp;
+&nbsp;import game.Board;
+&nbsp;import game.Point;
+&nbsp;import game.Triangle.Checker;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;import static org.junit.jupiter.api.Assertions.*;
+&nbsp;
+<b class="fc">&nbsp;public class BoardTest {</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testAddChecker() {
+<b class="fc">&nbsp;        Board board = new Board();</b>
+<b class="fc">&nbsp;        Point point = new Point();</b>
+&nbsp;
+<b class="fc">&nbsp;        board.addChecker(point, 3, Checker.X);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertFalse(point.isEmpty());</b>
+<b class="fc">&nbsp;        assertEquals(3, point.getSize());</b>
+<b class="fc">&nbsp;        assertTrue(point.equals(Checker.X));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testAssignCheckers() {
+<b class="fc">&nbsp;        Board board = new Board();</b>
+<b class="fc">&nbsp;        Point[] points = new Point[26];</b>
+<b class="fc">&nbsp;        for (int i = 0; i &lt; 26; i++) {</b>
+<b class="fc">&nbsp;            points[i] = new Point();</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        board.assignCheckers(points);</b>
+&nbsp;
+&nbsp;        // Check if checkers are assigned correctly to the specified points
+<b class="fc">&nbsp;        assertEquals(2, points[1].getSize());</b>
+<b class="fc">&nbsp;        assertEquals(5, points[12].getSize());</b>
+<b class="fc">&nbsp;        assertEquals(3, points[17].getSize());</b>
+<b class="fc">&nbsp;        assertEquals(5, points[19].getSize());</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(3, points[8].getSize());</b>
+<b class="fc">&nbsp;        assertEquals(5, points[6].getSize());</b>
+<b class="fc">&nbsp;        assertEquals(5, points[13].getSize());</b>
+<b class="fc">&nbsp;        assertEquals(2, points[24].getSize());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testRollDice() {
+<b class="fc">&nbsp;        Board board = new Board();</b>
+&nbsp;
+&nbsp;        // Roll the dice 1000 times and check if the result is within the valid range [1, 6]
+<b class="fc">&nbsp;        for (int i = 0; i &lt; 1000; i++) {</b>
+<b class="fc">&nbsp;            int result = Board.rollDice();</b>
+<b class="fc">&nbsp;            assertTrue(result &gt;= 1 &amp;&amp; result &lt;= 6);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+&nbsp;
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-24 13:09</div>
+</div>
+</body>
+</html>
