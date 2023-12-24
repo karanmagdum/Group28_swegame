@@ -2,12 +2,31 @@ package game;
 
 import game.Triangle.Checker;
 
+/**
+ * The Board class represents the game board in a Backgammon game.
+ * It includes methods for adding checkers, assigning initial checkers to points,
+ * and displaying the game board with status, moves, scores and pip counts.
+ */
 public class Board {
+
+    /**
+     * Adds a specified number of checkers to a given point on the board.
+     *
+     * @param point   The point to which checkers will be added.
+     * @param count   The number of checkers to add.
+     * @param checker The checker type to be added (X or O).
+     */
     public void addChecker(Point point, int count, Checker checker){
         for(int i=1;i<=count;i++){
             point.add(checker);
         }
     }
+
+    /**
+     * Assigns initial checkers to the game board points.
+     *
+     * @param points The array of points representing the game board.
+     */
     public void assignCheckers(Point[] points){
         for(int i=0;i<points.length;i++){
             points[i] = new Point();
@@ -24,7 +43,14 @@ public class Board {
         addChecker(points[24], 2, Checker.O);
     }
 
-    //Display - refactor this
+    /**
+     * Displays the game board with the current checkers' distribution.
+     *
+     * @param flag    A boolean flag representing the current player's turn.
+     * @param points  The array of points representing the game board.
+     * @param player1 The User object representing player 1.
+     * @param player2 The User object representing player 2.
+     */
     public void display(boolean flag, Point[] points, User player1, User player2){
 
         int bottomMax=0, topMax=0;
@@ -171,15 +197,34 @@ public class Board {
         System.out.println();
     }
 
+    /**
+     * Displays the pip count for a specific player.
+     *
+     * @param player1Name The name of player 1.
+     * @param player2Name The name of player 2.
+     * @param player1Pip  The pip count for player 1.
+     * @param player2Pip  The pip count for player 2.
+     */
     public static void displayPip(String player1Name, String player2Name, int player1Pip, int player2Pip){
         System.out.println("Pip count for "+player1Name+" = "+player1Pip);
         System.out.println("Pip count for "+player2Name+" = "+player2Pip);
         System.out.println("\n");
     }
 
+    /**
+     * Simulates the rolling of a six-sided die and returns the result.
+     *
+     * @return A random integer between 1 and 6, inclusive.
+     */
     public static int rollDice() {
         return (int)(Math.random() * 6) + 1;
     }
+    /**
+     * Displays the pip counts for the upper section of the board.
+     *
+     * @param points The array of points representing the game board.
+     * @param flag   A boolean flag representing the current player's turn.
+     */
      public static void displayUpperPips(Point[] points, boolean flag){
          int[] pipCounts = PipCount.countIndividualPip(points, flag);
          System.out.print("\tPIP ");
@@ -202,6 +247,12 @@ public class Board {
          }
      }
 
+    /**
+     * Displays the pip counts for the upper section of the board.
+     *
+     * @param points The array of points representing the game board.
+     * @param flag   A boolean flag representing the current player's turn.
+     */
      public static void displayLowerPips(Point[] points, boolean flag){
          int[] pipCounts = PipCount.countIndividualPip(points, flag);
          System.out.print("\tPIP ");

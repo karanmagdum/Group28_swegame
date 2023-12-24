@@ -4,10 +4,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import game.Triangle.Checker;
+
+/**
+ * The Move class handles the generation of valid moves for Backgammon checkers
+ * based on dice rolls. It provides methods for determining valid moves, handling
+ * bear-off moves, generating moves for the same dice roll, and managing the state
+ * of the game board during moves.
+ */
 public class Move {
+    /**
+     * ArrayList to store valid point positions for a given move.
+     */
     public ArrayList<Integer> validPointPositions = new ArrayList<>();
+    /**
+     * HashMap to store generated moves for a given roll configuration.
+     */
     public HashMap<Integer, ArrayList<ArrayList<Integer>>> map = new HashMap<>();
 
+    /**
+     * Checks if a move involves bearing off checkers.
+     *
+     * @param checker The Checker type representing the current player.
+     * @return True if the move involves bearing off, false otherwise.
+     */
     public boolean isBearOff(Checker checker){
         boolean flag = true;
         for(int i:validPointPositions){
@@ -19,6 +38,13 @@ public class Move {
         return flag;
     }
 
+    /**
+     * Generates moves for the same dice roll and adds them to the map.
+     *
+     * @param points   The array of Point objects representing the game board.
+     * @param roll1    The value of the dice roll.
+     * @param isBearOff A boolean indicating whether the move involves bearing off.
+     */
     public void generateSameDiceRollMoves(Point[] points, int roll1, boolean isBearOff){
         int mapKey  = 1;
         // Four points could be moved with value of roll1
@@ -50,6 +76,14 @@ public class Move {
                         }
                     }
     }
+
+    /**
+     * Generates bear-off moves and adds them to the map.
+     *
+     * @param points The array of Point objects representing the game board.
+     * @param roll1  The value of the first dice roll.
+     * @param roll2  The value of the second dice roll.
+     */
     public void getBearOffMoves(Point[] points, int roll1, int roll2){
         //If same role dice
         int mapKey  = 1;
@@ -85,6 +119,16 @@ public class Move {
             }
         }
     }
+
+    /**
+     * Generates all possible moves for a given dice roll configuration.
+     *
+     * @param checker The Checker type representing the current player.
+     * @param points  The array of Point objects representing the game board.
+     * @param roll1   The value of the first dice roll.
+     * @param roll2   The value of the second dice roll.
+     * @return A HashMap containing the generated moves.
+     */
     public HashMap<Integer, ArrayList<ArrayList<Integer>>> getMoves(Checker checker, Point[] points, int roll1, int roll2){
         //clear old context
         validPointPositions.clear();
@@ -132,6 +176,14 @@ public class Move {
         return map;
     }
 
+    /**
+     * Checks if a move is valid based on the current game state.
+     *
+     * @param points   The array of Point objects representing the game board.
+     * @param position The starting position of the move.
+     * @param roll     The value of the dice roll for the move.
+     * @return True if the move is valid, false otherwise.
+     */
     public boolean isValidMove(Point [] points, int position, int roll){
         boolean isValid = false;
         //move points[position] with roll value
@@ -148,11 +200,27 @@ public class Move {
         return isValid;
     }
 
+    /**
+     * Checks if checkers can be cleared from the bar during a move.
+     *
+     * @param position The position where the move is initiated.
+     * @return True if checkers can be cleared from the bar, false otherwise.
+     */
     public boolean areBarsClearable(int position){
         //Check if in hit condition, all checkers should be cleared from Bar
         return (validPointPositions.contains(0) == (position == 0)) && (validPointPositions.contains(25) == (position == 25)) ;
     }
 
+    /**
+     * Checks if a move involving two points is valid based on the current game state.
+     *
+     * @param points      The array of Point objects representing the game board.
+     * @param firstPoint  The starting position of the first move.
+     * @param roll1       The value of the dice roll for the first move.
+     * @param secondPoint The starting position of the second move.
+     * @param roll2       The value of the dice roll for the second move.
+     * @return True if the move is valid, false otherwise.
+     */
     public boolean isValidMove(Point[] points, int firstPoint, int roll1, int secondPoint, int roll2){
         boolean isValid = false;
         //move one point forward with roll1 and roll2
@@ -169,6 +237,14 @@ public class Move {
         return isValid;
     }
 
+    /**
+     * Executes a move on the game board, updating the board state.
+     *
+     * @param points The array of Point objects representing the game board.
+     * @param start  The starting position of the move.
+     * @param end    The ending position of the move. If -1, it indicates a bear-off move.
+     * @param checker The Checker type representing the current player.
+     */
     public void makeMove(Point[] points,int start, int end,Checker checker)
     {
         //If end==-1 then BearOFF directly

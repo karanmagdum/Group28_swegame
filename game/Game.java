@@ -5,23 +5,50 @@ import java.util.HashMap;
 import java.util.Scanner;
 import game.Triangle.Checker;
 
+/**
+ * The Game class represents the main logic and flow of a Backgammon game.
+ * It includes methods for initializing the game, displaying the game board,
+ * handling player turns, executing moves, managing game state, and determining
+ * the winner based on game outcomes. It also incorporates a doubling cube
+ * for handling double offers during the game.
+ */
 public class Game{
 
     //Points[0] - Lower Bar
     //Points[1-24] - Checker Points
     //Points[25] - Upper Bar
+    /**
+     * The points to hold the checkers.
+     */
     static private Point[]  points= new Point[26];
 
+    /**
+     * The map to get the possible moves.
+     */
     static private HashMap<Integer, ArrayList<ArrayList<Integer>>> movesList = new HashMap<>();
-
+    /**
+     * The scanner functionality to get input from the user
+     */
     static private Scanner scanner = new Scanner(System.in);
-
+    /**
+     * The status for turn of the players
+     */
     static private boolean turn;
-
+    /**
+     * The move object to help with the movement across points.
+     */
     static private Move move = new Move();
-
+    /**
+     * The current match number.
+     */
     static private int currentMatch = 1;
 
+    /**
+     * The main method that initiates and runs the Backgammon game.
+     *
+     * @param args Command-line arguments (not used).
+     * @throws InterruptedException Exception thrown for thread-related issues.
+     */
     public static void main(String[] args) throws InterruptedException {
 
         //Initialise game
@@ -205,6 +232,13 @@ public class Game{
         scanner.close();
     }
 
+    /**
+     * Resets the game state after a match is completed.
+     *
+     * @param board  The Board object representing the game board.
+     * @param winner The User object representing the winner of the match.
+     * @param loser  The User object representing the loser of the match.
+     */
     public static void resetGame(Board board, User Winner, User Loser){
         System.out.println("Congratulations "+Winner.getUsername()+"!!!, current match is over");
         System.out.println("Score Board");
@@ -215,6 +249,13 @@ public class Game{
         DoublingCube.setDoubleCount(1);
     }
 
+    /**
+     * Checks if a winner has been found based on the current game state.
+     *
+     * @param player1 The User object representing Player 1.
+     * @param player2 The User object representing Player 2.
+     * @return True if a winner is found, false otherwise.
+     */
     public static boolean FoundWinner(User player1, User player2){
         boolean player1Won=true, player2Won=true;
         for (int i = 1; i <= 24; i++) {
@@ -257,6 +298,13 @@ public class Game{
         return (player1Won || player2Won);
 
     }
+
+    /**
+     * Displays the menu of options for the player's turn.
+     *
+     * @param playerName The name of the current player.
+     * @return The selected option from the menu.
+     */
     public static int showMenu(String playerName) {
         System.out.println();
         System.out.println("Select from 1. Roll a dice 2. Quit Game 3. Pip 4. Dice 5. Double 6. Test File 7. End Current Match");
@@ -264,6 +312,9 @@ public class Game{
         return scanner.nextInt();
     }
 
+    /**
+     * Displays the available moves for the current player's turn.
+     */
     public static void showMoves(){
         for(int key:movesList.keySet()){
             String command = new String(key+".");
@@ -286,6 +337,9 @@ public class Game{
         }
     }
 
+    /**
+     * Executes the selected moves during the player's turn.
+     */
     public static void executeMoves(){
         System.out.println("Enter the command number from the list to make a move !!");
         int moveChoice = scanner.nextInt();
@@ -305,6 +359,12 @@ public class Game{
         }
     }
 
+    /**
+     * Determines the game result based on the current game state.
+     *
+     * @param checker The Checker type representing the current player.
+     * @return The result of the game, indicating a normal win, gammon, or backgammon.
+     */
     public static int determineGameResult(Checker checker) {
         boolean hasCheckerOnBar =false;
         int checkerCount = 0;
@@ -342,7 +402,14 @@ public class Game{
         return 2;
     }
 
-    //Utility function to print colored Strings
+    /**
+     * Utility function to print colored Strings.
+     *
+     * @param <T>    The type of the input.
+     * @param input  The input value to be styled.
+     * @param style  The ANSI escape code for styling.
+     * @return The styled String.
+     */
     public static <T> String getStyledString(T input, String style){
         return style+input+"\u001B[0m";
     }
